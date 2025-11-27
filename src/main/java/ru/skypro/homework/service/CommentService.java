@@ -1,8 +1,10 @@
 package ru.skypro.homework.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.skypro.homework.dto.request.CreateOrUpdateCommentDto;
 import ru.skypro.homework.dto.response.CommentDto;
 import ru.skypro.homework.dto.response.CommentsDto;
@@ -63,9 +65,10 @@ public class CommentService {
     }
 
     public void deleteComment(int adId, int commentId, Authentication auth) {
-        AdComment comment = commentRepository.findById(commentId).orElseThrow();
+        AdComment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Комментарий не найден"));
         if (!comment.getAuthor().getUsername().equals(auth.getName())) {
-            throw new SecurityException("Нет прав");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Нельзя удалять чужой комментарий");
         }
         commentRepository.delete(comment);
     }

@@ -1,9 +1,12 @@
 package ru.skypro.homework.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import ru.skypro.homework.dto.request.CreateOrUpdateAdDto;
 import ru.skypro.homework.dto.response.AdDto;
 import ru.skypro.homework.dto.response.AdsDto;
@@ -77,7 +80,7 @@ public class AdService {
     public void deleteAd(int id, Authentication auth) {
         Ad ad = adRepository.findById(id).orElseThrow();
         if (!ad.getAuthor().getUsername().equals(auth.getName())) {
-            throw new SecurityException("Нет прав");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Это не твоё объявление");
         }
         adRepository.delete(ad);
     }
