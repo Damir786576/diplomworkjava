@@ -66,9 +66,12 @@ public class CommentService {
 
     public void deleteComment(int adId, int commentId, Authentication auth) {
         AdComment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Комментарий не найден"));
-        if (!comment.getAuthor().getUsername().equals(auth.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Нельзя удалять чужой комментарий");
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String currentUser = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (!comment.getAuthor().getUsername().equals(currentUser) && !isAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         commentRepository.delete(comment);
     }

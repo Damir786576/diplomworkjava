@@ -1,6 +1,6 @@
 package ru.skypro.homework.config;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,11 +18,20 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final DataSource dataSource;
-    private final PasswordEncoder passwordEncoder;
+    private DataSource dataSource;
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Bean
     public UserDetailsManager userDetailsService() {
@@ -31,15 +40,16 @@ public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .csrf().disable()
                 .cors().and()
                 .authorizeHttpRequests(auth -> auth
-                        .mvcMatchers("/register", "/login").permitAll()
-                        .mvcMatchers("/ads/**", "/users/**").authenticated()
+                        .antMatchers("/login", "/register").permitAll()
+                        .antMatchers("/ads/**", "/users/**").authenticated()
                         .anyRequest().permitAll()
                 )
                 .httpBasic(withDefaults())
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }

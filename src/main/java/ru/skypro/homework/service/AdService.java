@@ -78,9 +78,13 @@ public class AdService {
     }
 
     public void deleteAd(int id, Authentication auth) {
-        Ad ad = adRepository.findById(id).orElseThrow();
-        if (!ad.getAuthor().getUsername().equals(auth.getName())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Это не твоё объявление");
+        Ad ad = adRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String currentUser = auth.getName();
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        if (!ad.getAuthor().getUsername().equals(currentUser) && !isAdmin) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         adRepository.delete(ad);
     }
