@@ -1,17 +1,12 @@
-package ru.skypro.homework.service.impl;
+package ru.skypro.homework.mapper;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import ru.skypro.homework.dto.request.UpdateUserDto;
+import org.springframework.stereotype.Component;
 import ru.skypro.homework.dto.response.UserDto;
+import ru.skypro.homework.dto.request.UpdateUserDto;
 import ru.skypro.homework.model.User;
-import ru.skypro.homework.repository.UserRepository;
 
-@Service
-@RequiredArgsConstructor
-public class UserServiceImpl {
-
-    private final UserRepository userRepository;
+@Component
+public class UserMapper {
 
     public UserDto toUserDto(User user) {
         UserDto dto = new UserDto();
@@ -21,7 +16,7 @@ public class UserServiceImpl {
         dto.setLastName(user.getLastName());
         dto.setPhone(user.getPhone());
         dto.setRole(user.getRole().name());
-        dto.setImage(user.getImage());
+        dto.setImage(user.getImage() != null ? "/users/image/" + user.getId() : null);
         return dto;
     }
 
