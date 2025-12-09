@@ -15,7 +15,7 @@ public class AdMapper {
         dto.setAuthor(ad.getAuthor().getId());
         dto.setPrice(ad.getPrice());
         dto.setTitle(ad.getTitle());
-        dto.setImage(ad.getImage() != null ? "/ads/image/" + ad.getPk() : null);
+        dto.setImage(ad.getImage() != null ? "/ads/image/" + ad.getImage() : null);
         return dto;
     }
 
@@ -29,7 +29,7 @@ public class AdMapper {
         dto.setPhone(ad.getAuthor().getPhone());
         dto.setPrice(ad.getPrice());
         dto.setTitle(ad.getTitle());
-        dto.setImage(ad.getImage() != null ? "/ads/image/" + ad.getPk() : null);
+        dto.setImage(ad.getImage() != null ? "/ads/image/" + ad.getImage() : null);
         return dto;
     }
 

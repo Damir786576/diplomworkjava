@@ -48,14 +48,14 @@ public class UserService {
 
     public void updateAvatar(MultipartFile file, Authentication auth) throws Exception {
         User user = userRepository.findByUsername(auth.getName()).orElseThrow();
-        String fileName = saveImage(file, "users");
+        String fileName = saveImage(file);
         user.setImage(fileName);
         userRepository.save(user);
     }
 
-    private String saveImage(MultipartFile file, String folder) throws Exception {
+    private String saveImage(MultipartFile file) throws Exception {
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-        Path path = Paths.get("uploads/" + folder + "/" + fileName);
+        Path path = Paths.get("uploads/users/" + fileName);
         Files.createDirectories(path.getParent());
         Files.copy(file.getInputStream(), path);
         return fileName;

@@ -12,7 +12,8 @@ public class AdCommentMapper {
         dto.setPk(comment.getPk());
         dto.setAuthor(comment.getAuthor().getId());
         dto.setAuthorFirstName(comment.getAuthor().getFirstName());
-        dto.setAuthorImage(comment.getAuthor().getImage());
+        dto.setAuthorImage(comment.getAuthor().getImage() != null
+                ? "/users/image/" + comment.getAuthor().getImage() : null);
         dto.setCreatedAt(comment.getCreatedAt().atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli());
         dto.setText(comment.getText());
         return dto;
